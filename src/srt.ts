@@ -45,7 +45,7 @@ function wrapWords(text: string, max: number): string[] {
 /** Quebra por caracteres (CJK), preferindo cortar após pontuação. CJK ocupa 2 colunas. */
 function wrapCjk(text: string, max: number): string[] {
   const width = (c: string) => (CJK_RE.test(c) ? 2 : 1);
-  const breakAfter = /[、。，,！!？?；;：:...・」』）)\s]/;
+  const breakAfter = /[、。，,！!？?；;：:…・」』）)\s]/;
   const chars = [...text];
   const lines: string[] = [];
   let cur: string[] = [];

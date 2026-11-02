@@ -52,7 +52,7 @@ npx ts-node src/index.ts video.mp4 -l ja --ollama-model qwen2.5:14b
 | `--language`, `-l` | `ja`, `zh` ou `auto` (padrão) |
 | `--skip-refine` | Pula a correção com Ollama |
 | `--output`, `-o` | Caminho do SRT (padrão: `<video>.en.srt`) |
-| `--ollama-model` | Modelo Ollama (padrão `qwen2.5:7b`) |
+| `--ollama-model` | Modelo Ollama (padrão `qwen2.5:14b`) |
 | `--whisper-model` | Modelo Whisper (padrão `large-v3`; mais rápido: `large-v3-turbo`) |
 | `--keep-audio` | Mantém o WAV temporário |
 
