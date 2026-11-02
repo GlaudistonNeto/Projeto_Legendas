@@ -40,14 +40,23 @@ ollama pull qwen2.5:14b     # opcional: melhor qualidade, exige ~10 GB de RAM/VR
 ## Uso
 
 ```bash
-npx ts-node src/index.ts video.mp4 --language ja
-npx ts-node src/index.ts video.mp4 --language zh --output legendas/video.srt
-npx ts-node src/index.ts video.mp4                      # detecção automática do idioma
-npx ts-node src/index.ts video.mp4 -l ja --skip-refine  # sem Ollama
-npx ts-node src/index.ts video.mp4 -l ja --ollama-model qwen2.5:14b
+# Japonês → inglês
+pnpm ts-node src/index.ts "video.mp4" --language ja --whisper-model large-v3
 
-pnpm ts-node src/index.ts "C:\folder\video.mp4" --language ja --whisper-model large-v3
+# Chinês → inglês, com caminho de saída definido
+pnpm ts-node src/index.ts "video.mp4" --language zh --whisper-model large-v3 --output "legendas/video.srt"
+
+# Detecção automática do idioma
+pnpm ts-node src/index.ts "video.mp4" --whisper-model large-v3
+
+# Sem refinamento com Ollama
+pnpm ts-node src/index.ts "video.mp4" --language ja --whisper-model large-v3 --skip-refine
+
+# Escolhendo outro modelo do Ollama já instalado
+pnpm ts-node src/index.ts "video.mp4" --language ja --whisper-model large-v3 --ollama-model qwen2.5:14b
 ```
+
+> Execute os comandos na pasta do projeto. Informe o nome do modelo Whisper, como large-v3, na opção --whisper-model, e não o caminho de um arquivo .bin. Nos exemplos, essa opção é explícita para evitar que uma configuração incorreta de WHISPER_MODEL seja utilizada. A transcrição e o refinamento são locais; a tradução utiliza a API DeepL.
 
 | Opção | Descrição |
 |---|---|
@@ -55,7 +64,7 @@ pnpm ts-node src/index.ts "C:\folder\video.mp4" --language ja --whisper-model la
 | `--skip-refine` | Pula a correção com Ollama |
 | `--output`, `-o` | Caminho do SRT (padrão: `<video>.en.srt`) |
 | `--ollama-model` | Modelo Ollama (padrão `qwen2.5:14b`) |
-| `--whisper-model` | Modelo Whisper (padrão `large-v3`; mais rápido: `large-v3-turbo`) |
+| `--whisper-model` | Nome do modelo Whisper. Modelo usado no teste bem-sucedido: large-v3. Não aceita o caminho do arquivo .bin nessa configuração. |
 | `--keep-audio` | Mantém o WAV temporário |
 
 ## Por que funciona melhor para idiomas asiáticos
@@ -65,7 +74,7 @@ pnpm ts-node src/index.ts "C:\folder\video.mp4" --language ja --whisper-model la
 - **Sem divisão por espaços**: CJK não separa palavras com espaço — a quebra de linha usa contagem de caracteres e pontuação (、。，！？).
 - **Qwen2.5 (Alibaba)**: treinado fortemente em chinês e japonês; corrige kanji/hanzi homófonos e partículas com prompts escritos no próprio idioma, em lotes de 8 com contexto do lote anterior. Se o Ollama falhar, a transcrição original é mantida.
 - **DeepL em lotes de 30** com texto vizinho no parâmetro `context`, recuperando sujeitos omitidos (muito comuns em japonês/chinês).
-- **SRT legível**: máx. 42 caracteres × 2 linhas, duração mínima de 1 s.
+- **SRT legível**: até duas linhas por legenda, com quebra de texto e divisão proporcional do tempo para textos longos. Sobreposições são cortadas no início da próxima legenda, sem impor duração mínima de exibição.
 
 ## Estrutura
 

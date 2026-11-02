@@ -3,9 +3,6 @@ import type { Segment } from './types';
 
 const MAX_CHARS_PER_LINE = 42;
 const MAX_LINES = 2;
-const MIN_DURATION = 1.0;
-/** Folga mínima entre legendas consecutivas (s). */
-const GAP = 0.05;
 
 export function formatTimestamp(seconds: number): string {
   const totalMs = Math.max(0, Math.round(seconds * 1000));
@@ -127,17 +124,16 @@ function buildCues(segments: Segment[]): Cue[] {
   for (let i = 0; i < cues.length; i++) {
     const c = cues[i];
     const next = cues[i + 1];
-    if (c.end - c.start < MIN_DURATION) {
-      c.end = c.start + MIN_DURATION;
-    }
-    if (next && c.end > next.start - GAP) {
-      // Se não couber, empurra o início da próxima (mantendo ordem) em vez de encurtar abaixo de 1s.
-      if (next.start - GAP - c.start >= MIN_DURATION) c.end = next.start - GAP;
-      else next.start = c.end + GAP;
-      if (next.end < next.start) next.end = next.start + MIN_DURATION;
+    if (next && c.end > next.start) {
+      c.end = next.start;
     }
   }
-  return cues;
+
+  return cues.filter((c) =>
+    Number.isFinite(c.start) &&
+    Number.isFinite(c.end) &&
+    Math.round(c.end * 1000) > Math.round(c.start * 1000)
+  );
 }
 
 export function buildSrt(segments: Segment[]): string {

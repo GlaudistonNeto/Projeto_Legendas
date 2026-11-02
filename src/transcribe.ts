@@ -66,12 +66,6 @@ function cleanSegments(segments: Segment[]): Segment[] {
     const text = s.text.replace(/\s+/g, ' ').trim();
     if (!text || /^[\s.,!?。、！？…・-]+$/.test(text)) continue;
     if (hallucinations.some((re) => re.test(text)) && s.end - s.start < 4) continue;
-    // Repetição idêntica consecutiva (loop do decoder)
-    const prev = out[out.length - 1];
-    if (prev && prev.text === text && s.start - prev.end < 1) {
-      prev.end = Math.max(prev.end, s.end);
-      continue;
-    }
     out.push({ ...s, id: out.length + 1, text });
   }
   return out;
@@ -90,10 +84,12 @@ export async function transcribe(
     withCuda: true,
     backend: 'native',
     autoDownloadModelName: modelName,
+    autoDownloadVadModelName: 'silero-v6.2.0',
     removeWavFileAfterTranscription: false,
     logger: console,
     whisperOptions: {
       noGpu: false,
+      vad: true,
       outputInJson: true,
       outputInSrt: false,
       outputInText: false,
