@@ -81,15 +81,19 @@ export async function transcribe(
   wavPath: string,
   language: string,
   modelName = 'large-v3',
+
 ): Promise<TranscriptionResult> {
   const whisperLanguage = language === 'auto' ? 'auto' : language;
 
   const transcript = await nodewhisper(wavPath, {
     modelName,
+    withCuda: true,
+    backend: 'native',
     autoDownloadModelName: modelName,
     removeWavFileAfterTranscription: false,
-    logger: SILENT_LOGGER,
+    logger: console,
     whisperOptions: {
+      noGpu: false,
       outputInJson: true,
       outputInSrt: false,
       outputInText: false,

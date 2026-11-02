@@ -1,0 +1,3 @@
+Open Terminal inside D:\BitComet\tor\projeto-legendas
+
+pnpm ts-node src/index.ts "D:\Bitcomet\tor\video.mp4" --language xx
