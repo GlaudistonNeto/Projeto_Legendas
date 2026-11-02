@@ -22,9 +22,9 @@ Vídeo → FFmpeg (WAV 16 kHz mono + loudnorm) → Whisper large-v3 (whisper.cpp
 ## Instalação
 
 ```bash
-npm install
-# Se o npm avisar que o script de instalação do nodejs-whisper não foi executado:
-npm rebuild nodejs-whisper   # compila o addon nativo (opcional; senão usa o CLI do whisper.cpp)
+pnpm install
+# Se o pnpm avisar que o script de instalação do nodejs-whisper não foi executado:
+pnpm rebuild nodejs-whisper   # compila o addon nativo (opcional; senão usa o CLI do whisper.cpp)
 cp .env.example .env          # e preencha DEEPL_API_KEY (já preenchido neste projeto)
 ```
 
@@ -45,6 +45,8 @@ npx ts-node src/index.ts video.mp4 --language zh --output legendas/video.srt
 npx ts-node src/index.ts video.mp4                      # detecção automática do idioma
 npx ts-node src/index.ts video.mp4 -l ja --skip-refine  # sem Ollama
 npx ts-node src/index.ts video.mp4 -l ja --ollama-model qwen2.5:14b
+
+pnpm ts-node src/index.ts "C:\folder\video.mp4" --language ja --whisper-model large-v3
 ```
 
 | Opção | Descrição |
